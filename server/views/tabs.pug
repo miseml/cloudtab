@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  p List of saved tabs
+
+  table(style='width:100%', border='1')
+    tr
+      th(style='width:90%; text-align: center') URL
+      th(style='width:7%; text-align: center') TIME
+      th(style='width:3%; text-align: center') DELETE
+    each tab in tabs
+      tr
+        td(style='text-align: center') #{tab.url}
+        td(style='text-align: right') #{tab.time}
+        td(style='text-align: center')
+          form(method="POST", action=`/tabs/delete/${tab.id}`)
+            button delete
