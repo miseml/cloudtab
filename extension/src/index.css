@@ -1,0 +1,16 @@
+.cloudtab-container {
+    background-color: azure;
+    border: 0.1em solid black;
+    left: 128px;
+    padding: 6px 14px;
+    position: fixed;
+    top: 32px;
+    z-index: 2147483647 !important;
+}
+
+.cloudtab-button {
+    color: black;
+    font: bold 1em Arial, Helvetica;
+    text-align: center;
+    text-decoration: none;
+}

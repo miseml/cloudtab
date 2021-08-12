@@ -1,0 +1,18 @@
+{
+    "env": {
+      "browser": false,
+      "jest": true
+    },
+    "plugins": ["node", "header", "prettier"],
+    "extends": [
+      "eslint:recommended",
+      "plugin:node/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "node/exports-style": ["error", "module.exports"],
+      "node/no-unpublished-require": "off",
+      "semi": [2, "always"],
+      "prettier/prettier": "error"
+    }
+}

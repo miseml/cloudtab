@@ -1,0 +1,27 @@
+{
+  "name": "CloudTab",
+  "version": "1.0",
+  "description": "save tabs into cloud",
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "*://*/*"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "content_scripts": [
+    {
+      "css": [
+        "index.css"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "index.js"
+      ]
+    }
+  ]
+}
