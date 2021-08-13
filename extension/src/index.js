@@ -1,14 +1,18 @@
+const {get, set} = require('./urlOccurencesStorage');
+
 const div = document.createElement('cloud-tab-container');
 div.classList.add('cloudtab-container');
 
 const button = document.createElement('cloud-tab-button');
 button.classList.add('cloudtab-button');
+const url = document.location.href;
 
-const text = document.createTextNode('Save');
+get(url).then(value => {
+    const numberOfSavedOccurrences = value >= 0 ? value : 0;
+    button.innerHTML = `Save (${numberOfSavedOccurrences})`;
+});
 
-button.addEventListener('click', () => {
-    const url = document.location.href;
-
+div.addEventListener('click', () => {
     fetch('http://localhost:3000/tabs', {
         method: 'POST',
         cache: 'no-cache',
@@ -17,12 +21,17 @@ button.addEventListener('click', () => {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({url})
-    }).then(()=> {
+    }).then(() => {
+        get(url).then(value => {
+            const updatedNumberOfSaves = value >= 0 ? value + 1 : 1;
+            set(url, updatedNumberOfSaves).then(() => {
+                button.innerHTML = `Save (${updatedNumberOfSaves})`;
+            });
+        });
         console.log('sent')
     });
 
 });
 
-button.appendChild(text);
 div.appendChild(button);
 document.body.appendChild(div);
