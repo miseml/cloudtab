@@ -1,4 +1,5 @@
 const {get, set} = require('./urlOccurencesStorage');
+const {postTab} = require('./api');
 
 const div = document.createElement('cloud-tab-container');
 div.classList.add('cloudtab-container');
@@ -13,15 +14,7 @@ get(url).then(value => {
 });
 
 div.addEventListener('click', () => {
-    fetch('http://localhost:3000/tabs', {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({url})
-    }).then(() => {
+    postTab(url).then(() => {
         get(url).then(value => {
             const updatedNumberOfSaves = value >= 0 ? value + 1 : 1;
             set(url, updatedNumberOfSaves).then(() => {
