@@ -4,47 +4,57 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const sassMiddleware = require('node-sass-middleware');
-var cors = require('cors')
+const cors = require('cors');
 
 const indexRouter = require('./routes');
 const tabsRouter = require('./routes/tabs');
 
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+const MongoClient = require('mongodb').MongoClient;
 
-app.use(cors());
-app.use(logger('dev'));
-// app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(sassMiddleware({
-  src: path.join(__dirname, 'public'),
-  dest: path.join(__dirname, 'public'),
-  indentedSyntax: true, // true = .sass and false = .scss
-  sourceMap: true
-}));
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
+const connectionString = process.env.MONGODB || "mongodb://mongo:27017/test";
 
-app.use('/', indexRouter);
-app.use('/tabs', tabsRouter);
+MongoClient.connect(connectionString, {
+    useUnifiedTopology: true
+}, (err, client) => {
+    if (err) return console.error(err)
+    const db = client.db('cloud-tabs')
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
+    // view engine setup
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'pug');
 
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    app.use(cors());
+    app.use(logger('dev'));
+    app.use(cookieParser());
+    app.use(sassMiddleware({
+        src: path.join(__dirname, 'public'),
+        dest: path.join(__dirname, 'public'),
+        indentedSyntax: true, // true = .sass and false = .scss
+        sourceMap: true
+    }));
+    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.json());
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+    app.use('/', indexRouter);
+    app.use('/tabs', tabsRouter(db));
+
+    // catch 404 and forward to error handler
+    app.use((req, res, next) => {
+        next(createError(404));
+    });
+
+    // error handler
+    app.use((err, req, res, next) => {
+        // set locals, only providing error in development
+        res.locals.message = err.message;
+        res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+        // render the error page
+        res.status(err.status || 500);
+        res.render('error');
+    });
 });
 
 module.exports = app;
