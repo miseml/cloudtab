@@ -4,8 +4,7 @@
   "description": "save tabs into cloud",
   "manifest_version": 3,
   "permissions": [
-    "activeTab",
-    "*://*/*"
+    "activeTab"
   ],
   "host_permissions": [
     "*://*/*"
