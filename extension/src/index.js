@@ -1,5 +1,3 @@
-const {postTab, countOccurrences} = require('./api');
-
 const div = document.createElement('cloud-tab-container');
 div.classList.add('cloudtab-container');
 
@@ -7,19 +5,15 @@ const button = document.createElement('cloud-tab-button');
 button.classList.add('cloudtab-button');
 const url = document.location.href;
 
-countOccurrences(url)
-    .then(response => response.json())
-    .then(({occurrences}) => {
-        button.innerHTML = `Save (${occurrences})`;
-    });
+chrome.runtime.sendMessage(({url, method: "count"}), (res) => {
+    res && (button.innerHTML = `Save (${res.occurrences})`);
+});
 
 div.addEventListener('click', () => {
-    postTab(url)
-        .then(response => response.json())
-        .then(({occurrences}) => {
-            button.innerHTML = `Save (${occurrences})`;
-            console.log('sent')
-        });
+    chrome.runtime.sendMessage(({url, method: "post"}), (res) => {
+        res && (button.innerHTML = `Save (${res.occurrences})`);
+
+    });
 });
 
 div.appendChild(button);
